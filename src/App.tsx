@@ -432,7 +432,9 @@ export default function App() {
         {/* HEADER */}
         <header className="header">
           <div>
-            <div className="logo">Priva<em>Pay</em></div>
+            <a href="/landing.html" style={{textDecoration:"none", color:"inherit"}}>
+  <div className="logo">Priva<em>Pay</em></div>
+</a>
             <div className="logo-sub">Confidential Payroll · FHEVM</div>
           </div>
           <div className="header-right">
