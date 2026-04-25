@@ -445,7 +445,10 @@ export default function App() {
               </div>
             )}
             {account ? (
-              <div className="wallet-addr">{short(account)}{isEmployer ? " · Employer" : isEmp ? " · Employee" : ""}</div>
+              <div style={{display:"flex", alignItems:"center", gap:8}}>
+  <div className="wallet-addr">{short(account)}{isEmployer ? " · Employer" : isEmp ? " · Employee" : ""}</div>
+  <button className="btn btn-outline" onClick={() => { setAccount(null); setContract(null); }} style={{padding:"6px 14px", fontSize:11}}>Disconnect</button>
+</div>
             ) : (
               <button className="wallet-btn" onClick={connect}>Connect Wallet</button>
             )}
