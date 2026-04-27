@@ -378,7 +378,36 @@ export default function App() {
 
   async function setSalary() {
     if (!ethers.isAddress(salaryAddr) || !salaryAmt) { toast("Fill all fields", "error"); return; }
-    toast("Salary encryption requires Relayer SDK integration — demo mode.", "info");
+    setLoading(true);
+    try {
+      const { createInstance, SepoliaConfig } = await import("@zama-fhe/relayer-sdk");
+      
+      toast("Initializing FHE instance...", "info");
+      const instance = await createInstance(SepoliaConfig);
+
+      const contractAddress = await contract.getAddress();
+      const userAddress = account!;
+
+      // Encrypt the salary amount
+      const input = instance.createEncryptedInput(contractAddress, userAddress);
+      input.add64(BigInt(salaryAmt));
+      const enc = await input.encrypt();
+
+      toast("Submitting encrypted salary onchain...", "info");
+      const tx = await contract.setSalary(
+        salaryAddr,
+        enc.handles[0],
+        enc.inputProof
+      );
+      await tx.wait();
+
+      toast("Salary encrypted and set onchain ✓", "success");
+      setSalaryAddr("");
+      setSalaryAmt("");
+    } catch (e: any) {
+      toast(e.reason || e.message || "Encryption failed", "error");
+    }
+    setLoading(false);
   }
 
   async function advancePeriod() {
